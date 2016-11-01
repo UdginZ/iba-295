@@ -1,7 +1,13 @@
 package trader;
 
 import java.io.Serializable;
-import javax.persistence.*;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.persistence.Version;
 
 
 /**
@@ -19,15 +25,28 @@ public class Customer implements Serializable {
 	private String ssn;
 	@Column(name="ADDRESS")
 	private String address;
-
 	@Column(name="CUST_NAME")
 	private String custName;
-	@Column(name="VERSION")
-	private int version;
+	@Version @Column(name="VERSION")
+	private int version = 1;
 
 	public Customer() {
 	}
+	
+	public Customer(String ssn, String name, String addr){
+		this.ssn= ssn;
+		this.custName= name;
+		this.address =addr;
+	}
+	
+	public Customer(String ssn) {
+        this(ssn, null, null);
+    } 
 
+	public Customer(String ssn, String name, String addr, int version){
+		this(ssn, name, addr);
+		this.version = version;
+	}
 	public String getSsn() {
 		return this.ssn;
 	}
@@ -53,7 +72,7 @@ public class Customer implements Serializable {
 	}
 
 	public int getVersion() {
-		return this.version;
+		return version;
 	}
 
 	public void setVersion(int version) {

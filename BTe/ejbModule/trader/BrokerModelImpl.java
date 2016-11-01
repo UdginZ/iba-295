@@ -1,20 +1,33 @@
 package trader;
 
 import java.util.List;
+
+import javax.annotation.Resource;
 import javax.ejb.LocalBean;
-import javax.persistence.*;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.ejb.TransactionManagement;
+import javax.ejb.TransactionManagementType;
+import javax.persistence.EntityExistsException;
+import javax.persistence.EntityManager;
+import javax.persistence.OptimisticLockException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.transaction.UserTransaction;
 
 /**
  * Session Bean implementation class BrokerToolImpl
  */
 @Stateless(mappedName = "BT")
 @LocalBean
+//@TransactionManagement(TransactionManagementType.BEAN)
 public class BrokerModelImpl implements BrokerModel {
+	//@Resource UserTransaction ut;
 	
 	@PersistenceContext
     private EntityManager em;
-
+	
     /** Creates a new instance of BrokerModelImpl */
     public BrokerModelImpl() {
     }
@@ -35,6 +48,7 @@ public class BrokerModelImpl implements BrokerModel {
     /**-------------------------------------------------------------
      * deletes the customer from the broker model
      */
+   // @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void deleteCustomer(Customer cust)
             throws BrokerException {
         String id = cust.getSsn();
@@ -51,13 +65,18 @@ public class BrokerModelImpl implements BrokerModel {
     /**-------------------------------------------------------------
      * Updates the customer in the broker model
      */
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void updateCustomer(Customer cust)
             throws BrokerException {
         Customer c = em.find(Customer.class, cust.getSsn());
         if (c == null) {
             throw new BrokerException("Customer : " + cust.getSsn() + " not found");
         } else {
+        	try{
             em.merge(cust);
+        	}catch(OptimisticLockException ole){
+        		throw new BrokerException("Record for " + cust.getSsn() + " has been modified since retrieval");
+        	}
         }
     }
 

@@ -25,11 +25,22 @@ public class Share implements Serializable {
 	@Column(name="SYMBOL")
 	private String symbol;
 	@Column(name="VERSION")
-	private int version;
+	private int version=1;
 
 	public Share() {
 	}
 
+	public Share(int id, int quantity, String ssn, String symbol){
+		this.id=id;
+		this.quantity=quantity;
+		this.ssn = ssn;
+		this.symbol = symbol;
+	}
+	
+	public Share(int id, int quantity, String ssn, String symbol, int version){
+	this(id, quantity,ssn,symbol);
+	this.version=version;
+	}
 	public int getId() {
 		return this.id;
 	}
@@ -63,7 +74,7 @@ public class Share implements Serializable {
 	}
 
 	public int getVersion() {
-		return this.version;
+		return version;
 	}
 
 	public void setVersion(int version) {
