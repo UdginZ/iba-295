@@ -75,7 +75,7 @@ public class BrokerModelImpl implements BrokerModel {
         	try{
             em.merge(cust);
         	}catch(OptimisticLockException ole){
-        		throw new BrokerException("Record for " + cust.getSsn() + " has been modified since retrieval");
+        		throw new BrokerException("Record for " + cust.getSsn() + "has been modified since retrieval");
         	}
         }
     }
